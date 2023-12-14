@@ -5,6 +5,8 @@ import cn.jailedbird.arouter.ksp.compiler.utils.findAnnotationWithType
 import cn.jailedbird.arouter.ksp.compiler.utils.getOnlyParent
 import cn.jailedbird.arouter.ksp.compiler.utils.isSubclassOf
 import cn.jailedbird.module.api.AutoSPI
+import com.google.devtools.ksp.KSTypeNotPresentException
+import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.Resolver
@@ -36,6 +38,7 @@ class AutoSPISymbolProcessorProvider : SymbolProcessorProvider {
             logger.warn("::fuck:$s")
         }
 
+        @OptIn(KspExperimental::class)
         override fun process(resolver: Resolver): List<KSAnnotated> {
             val symbol = resolver.getSymbolsWithAnnotation(ROUTE_CLASS_NAME)
 
@@ -44,9 +47,17 @@ class AutoSPISymbolProcessorProvider : SymbolProcessorProvider {
             elements.forEach { router ->
                 val spi: AutoSPI = router.findAnnotationWithType()
                     ?: error("Error ksp process, with [AutoSPISymbolProcessorProvider]")
-                val targetClass = spi.target
-                if (targetClass.qualifiedName == Void::class.qualifiedName || targetClass.qualifiedName == Unit::class.qualifiedName) {
-                    log(targetClass.qualifiedName.toString())
+                log("fuck")
+
+                val targetClassName = try {
+                    spi.target.qualifiedName.toString()
+                } catch (e: Exception) {
+                    // log("bean")
+                    // log(((e as? KSTypeNotPresentException)?.cause as? ClassNotFoundException)?.message.toString())
+                    ((e as? KSTypeNotPresentException)?.cause as? ClassNotFoundException)?.message.toString()
+                }
+
+                if (targetClassName == Void::class.qualifiedName || targetClassName == Unit::class.qualifiedName) {
                     val pair = router.getOnlyParent()
                     if (pair.first) {
                         generate(
@@ -58,20 +69,19 @@ class AutoSPISymbolProcessorProvider : SymbolProcessorProvider {
                         error("Please configure target")
                     }
                 } else {
-                    if (router.isSubclassOf(spi.target.qualifiedName!!)) {
+                    if (router.isSubclassOf(targetClassName)) {
                         println("fuck ok")
                         generate(
                             router,
-                            spi.target.qualifiedName!!,
+                            targetClassName,
                             router.toClassName().toString()
                         )
 
                     } else {
-                        error("AutoSPI.target is ${spi.target.qualifiedName}, but ${router.simpleName.asString()} is not a subclass of  ${spi.target.qualifiedName}")
+                        error("AutoSPI.target is ${targetClassName}, but ${router.simpleName.asString()} is not a subclass of  ${spi.target.qualifiedName}")
                     }
                 }
 
-                println(targetClass)
 
             }
 
