@@ -50,8 +50,12 @@ class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
                 val targetInterfaceClassName = try {
                     spi.target.qualifiedName.toString()
                 } catch (e: Exception) {
-                    // log("bean")
-                    // log(((e as? KSTypeNotPresentException)?.cause as? ClassNotFoundException)?.message.toString())
+                    /**
+                     * Bug: [ksp] com.google.devtools.ksp.KSTypeNotPresentException: java.lang.ClassNotFoundException: cn.jailedbird.arouter.ksp.test.TestInterface
+                     * Official document: https://github.com/google/ksp/issues?q=ClassNotFoundException++KClass%3C*%3E
+                     * temporary fix method as follows, but it is not perfect!!!
+                     * TODO complete fix it!
+                     * */
                     ((e as? KSTypeNotPresentException)?.cause as? ClassNotFoundException)?.message.toString()
                 }
 
