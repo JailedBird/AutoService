@@ -21,6 +21,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 
 dependencies {
     implementation 'com.alibaba:arouter-annotation:1.0.6'
+    implementation project(':lib')
 
     implementation 'com.squareup:javapoet:1.8.0'
 

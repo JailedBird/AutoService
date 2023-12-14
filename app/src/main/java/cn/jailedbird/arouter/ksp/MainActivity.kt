@@ -6,9 +6,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import cn.jailedbird.arouter.ksp.service.ITestService1
 import cn.jailedbird.arouter.ksp.service.ITestService2
+import cn.jailedbird.module.api.AutoSPI
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.launcher.ARouter
 
+@AutoSPI
 class MainActivity : AppCompatActivity() {
 
     @Autowired
@@ -37,7 +39,7 @@ class MainActivity : AppCompatActivity() {
                 .withString("lateStr", "Hello world. Late string")
                 .navigation(this)
         }
-        
+
         val testService1 = ARouter.getInstance()
             .navigation(ITestService1::class.java)
         val testService2 = ARouter.getInstance()
