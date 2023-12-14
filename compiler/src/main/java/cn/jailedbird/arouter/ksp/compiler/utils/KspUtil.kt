@@ -56,6 +56,7 @@ internal fun KSClassDeclaration.isSubclassOf(
                 superClasses.removeAt(0)
                 superClasses.addAll(0, declaration.superTypes.toList())
             }
+
             else -> {
                 superClasses.removeAt(0)
             }
@@ -63,6 +64,16 @@ internal fun KSClassDeclaration.isSubclassOf(
     }
     return false
 }
+
+internal fun KSClassDeclaration.getOnlyParent(): Pair<Boolean, KSTypeReference?> {
+    val superClasses = superTypes.toMutableList()
+    return if (superClasses.size == 1) {
+        true to superClasses[0]
+    } else {
+        false to null
+    }
+}
+
 
 internal fun KSClassDeclaration.isSubclassOf(superClassNames: List<String>): Int {
     val superClasses = superTypes.toMutableList()
@@ -84,6 +95,7 @@ internal fun KSClassDeclaration.isSubclassOf(superClassNames: List<String>): Int
     }
     return -1
 }
+
 
 internal fun KSPropertyDeclaration.isSubclassOf(superClassName: String): Boolean {
     val propertyType = type.resolve().declaration

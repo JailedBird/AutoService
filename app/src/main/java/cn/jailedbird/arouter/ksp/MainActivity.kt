@@ -10,7 +10,7 @@ import cn.jailedbird.module.api.AutoSPI
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.launcher.ARouter
 
-@AutoSPI
+// @AutoSPI(TestInterface::class)
 class MainActivity : AppCompatActivity() {
 
     @Autowired
