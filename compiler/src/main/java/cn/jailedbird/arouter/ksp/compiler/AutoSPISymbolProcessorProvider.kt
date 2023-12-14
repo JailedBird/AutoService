@@ -1,44 +1,41 @@
 package cn.jailedbird.arouter.ksp.compiler
 
-import cn.jailedbird.arouter.ksp.compiler.utils.*
+import cn.jailedbird.arouter.ksp.compiler.utils.KSPLoggerWrapper
+import cn.jailedbird.arouter.ksp.compiler.utils.findAnnotationWithType
+import cn.jailedbird.arouter.ksp.compiler.utils.getOnlyParent
+import cn.jailedbird.arouter.ksp.compiler.utils.isSubclassOf
 import cn.jailedbird.module.api.AutoSPI
-import com.google.devtools.ksp.KspExperimental
-import com.google.devtools.ksp.processing.*
+import com.google.devtools.ksp.processing.CodeGenerator
+import com.google.devtools.ksp.processing.Dependencies
+import com.google.devtools.ksp.processing.Resolver
+import com.google.devtools.ksp.processing.SymbolProcessor
+import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
+import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ksp.toClassName
-import java.util.*
 
 
 class AutoSPISymbolProcessorProvider : SymbolProcessorProvider {
 
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
         return AutoSPISymbolProcessor(
-            KSPLoggerWrapper(environment.logger), environment.codeGenerator, environment.options
+            KSPLoggerWrapper(environment.logger), environment.codeGenerator
         )
     }
 
     class AutoSPISymbolProcessor(
         private val logger: KSPLoggerWrapper,
         private val codeGenerator: CodeGenerator,
-        options: Map<String, String>
     ) : SymbolProcessor {
-        @Suppress("SpellCheckingInspection")
         companion object {
             private val ROUTE_CLASS_NAME = AutoSPI::class.qualifiedName!!
-            private val IROUTE_GROUP_CLASSNAME = Consts.IROUTE_GROUP.quantifyNameToClassName()
-            private val IPROVIDER_GROUP_CLASSNAME = Consts.IPROVIDER_GROUP.quantifyNameToClassName()
         }
-
-        private val moduleName = options.findModuleName(logger)
-        private val generateDoc = Consts.VALUE_ENABLE == options[Consts.KEY_GENERATE_DOC_NAME]
 
         private fun log(s: String) {
             logger.warn("::fuck:$s")
         }
 
-        @OptIn(KspExperimental::class)
         override fun process(resolver: Resolver): List<KSAnnotated> {
             val symbol = resolver.getSymbolsWithAnnotation(ROUTE_CLASS_NAME)
 
