@@ -15,7 +15,6 @@ import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.squareup.kotlinpoet.ksp.toClassName
 
 
 class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
@@ -48,7 +47,7 @@ class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
                 val spi: AutoService = element.findAnnotationWithType()
                     ?: error("Error ksp process, with [AutoSPISymbolProcessorProvider]")
 
-                val targetClassName = try {
+                val targetInterfaceClassName = try {
                     spi.target.qualifiedName.toString()
                 } catch (e: Exception) {
                     // log("bean")
@@ -56,28 +55,30 @@ class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
                     ((e as? KSTypeNotPresentException)?.cause as? ClassNotFoundException)?.message.toString()
                 }
 
-                if (targetClassName == Void::class.qualifiedName || targetClassName == Unit::class.qualifiedName) {
+                val targetImplClassName = element.qualifiedName!!.asString()
+
+                if (targetInterfaceClassName == Void::class.qualifiedName || targetInterfaceClassName == Unit::class.qualifiedName) {
                     val pair = element.getOnlyParent()
                     if (pair.first) {
                         generate(
                             element,
                             pair.second!!.resolve().declaration.qualifiedName!!.asString(),
-                            element.toClassName().canonicalName
+                            targetImplClassName
                         )
                     } else {
                         error("Please configure target")
                     }
                 } else {
-                    if (element.isSubclassOf(targetClassName)) {
+                    if (element.isSubclassOf(targetInterfaceClassName)) {
                         println("fuck ok")
                         generate(
                             element,
-                            targetClassName,
-                            element.toClassName().toString()
+                            targetInterfaceClassName,
+                            targetImplClassName
                         )
 
                     } else {
-                        error("AutoSPI.target is ${targetClassName}, but ${element.simpleName.asString()} is not a subclass of  ${spi.target.qualifiedName}")
+                        error("AutoSPI.target is ${targetInterfaceClassName}, but ${element.simpleName.asString()} is not a subclass of  ${spi.target.qualifiedName}")
                     }
                 }
 
