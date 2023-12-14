@@ -42,12 +42,11 @@ class AutoSPISymbolProcessorProvider : SymbolProcessorProvider {
             val elements = symbol.filterIsInstance<KSClassDeclaration>().toList()
 
             elements.forEach { router ->
-                // 1: check annotation
                 val spi: AutoSPI = router.findAnnotationWithType()
                     ?: error("Error ksp process, with [AutoSPISymbolProcessorProvider]")
-                val target = spi.target
-                if (target.qualifiedName == Void::class.qualifiedName || target.qualifiedName == Unit::class.qualifiedName) {
-                    log(target.qualifiedName.toString())
+                val targetClass = spi.target
+                if (targetClass.qualifiedName == Void::class.qualifiedName || targetClass.qualifiedName == Unit::class.qualifiedName) {
+                    log(targetClass.qualifiedName.toString())
                     val pair = router.getOnlyParent()
                     if (pair.first) {
                         generate(
@@ -72,7 +71,7 @@ class AutoSPISymbolProcessorProvider : SymbolProcessorProvider {
                     }
                 }
 
-                println(target)
+                println(targetClass)
 
             }
 

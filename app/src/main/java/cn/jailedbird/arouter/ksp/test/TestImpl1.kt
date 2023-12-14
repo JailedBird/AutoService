@@ -7,6 +7,6 @@ class TestImpl1<T> : TestInterface<String> {
 }
 
 
-@AutoSPI(TestInterface::class)
+@AutoSPI(target = TestInterface::class)
 class TestImpl2<T> : TestInterface<String> {
 }
