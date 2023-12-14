@@ -5,7 +5,7 @@ import com.google.devtools.ksp.symbol.KSNode
 
 class KSPLoggerWrapper(private val logger: KSPLogger) : KSPLogger {
     companion object {
-        const val TAG = "AutoSPI::Compiler "
+        const val TAG = "AutoService::Compiler "
     }
 
     override fun error(message: String, symbol: KSNode?) {

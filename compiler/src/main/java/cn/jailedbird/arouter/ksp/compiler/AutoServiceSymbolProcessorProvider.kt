@@ -4,7 +4,7 @@ import cn.jailedbird.arouter.ksp.compiler.utils.KSPLoggerWrapper
 import cn.jailedbird.arouter.ksp.compiler.utils.findAnnotationWithType
 import cn.jailedbird.arouter.ksp.compiler.utils.getOnlyParent
 import cn.jailedbird.arouter.ksp.compiler.utils.isSubclassOf
-import cn.jailedbird.module.api.AutoSPI
+import cn.jailedbird.module.api.AutoService
 import com.google.devtools.ksp.KSTypeNotPresentException
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.processing.CodeGenerator
@@ -18,36 +18,35 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.squareup.kotlinpoet.ksp.toClassName
 
 
-class AutoSPISymbolProcessorProvider : SymbolProcessorProvider {
+class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
 
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
-        return AutoSPISymbolProcessor(
+        return AutoServiceSymbolProcessor(
             KSPLoggerWrapper(environment.logger), environment.codeGenerator
         )
     }
 
-    class AutoSPISymbolProcessor(
+    class AutoServiceSymbolProcessor(
         private val logger: KSPLoggerWrapper,
         private val codeGenerator: CodeGenerator,
     ) : SymbolProcessor {
         companion object {
-            private val ROUTE_CLASS_NAME = AutoSPI::class.qualifiedName!!
+            private val AUTO_SERVICE_CLASS_NAME = AutoService::class.qualifiedName!!
         }
 
-        private fun log(s: String) {
-            logger.warn("::fuck:$s")
+        private fun log(str: String) {
+            logger.warn(str)
         }
 
         @OptIn(KspExperimental::class)
         override fun process(resolver: Resolver): List<KSAnnotated> {
-            val symbol = resolver.getSymbolsWithAnnotation(ROUTE_CLASS_NAME)
+            val symbol = resolver.getSymbolsWithAnnotation(AUTO_SERVICE_CLASS_NAME)
 
             val elements = symbol.filterIsInstance<KSClassDeclaration>().toList()
 
-            elements.forEach { router ->
-                val spi: AutoSPI = router.findAnnotationWithType()
+            elements.forEach { element ->
+                val spi: AutoService = element.findAnnotationWithType()
                     ?: error("Error ksp process, with [AutoSPISymbolProcessorProvider]")
-                log("fuck")
 
                 val targetClassName = try {
                     spi.target.qualifiedName.toString()
@@ -58,27 +57,27 @@ class AutoSPISymbolProcessorProvider : SymbolProcessorProvider {
                 }
 
                 if (targetClassName == Void::class.qualifiedName || targetClassName == Unit::class.qualifiedName) {
-                    val pair = router.getOnlyParent()
+                    val pair = element.getOnlyParent()
                     if (pair.first) {
                         generate(
-                            router,
+                            element,
                             pair.second!!.resolve().declaration.qualifiedName!!.asString(),
-                            router.toClassName().canonicalName
+                            element.toClassName().canonicalName
                         )
                     } else {
                         error("Please configure target")
                     }
                 } else {
-                    if (router.isSubclassOf(targetClassName)) {
+                    if (element.isSubclassOf(targetClassName)) {
                         println("fuck ok")
                         generate(
-                            router,
+                            element,
                             targetClassName,
-                            router.toClassName().toString()
+                            element.toClassName().toString()
                         )
 
                     } else {
-                        error("AutoSPI.target is ${targetClassName}, but ${router.simpleName.asString()} is not a subclass of  ${spi.target.qualifiedName}")
+                        error("AutoSPI.target is ${targetClassName}, but ${element.simpleName.asString()} is not a subclass of  ${spi.target.qualifiedName}")
                     }
                 }
 
@@ -100,7 +99,6 @@ class AutoSPISymbolProcessorProvider : SymbolProcessorProvider {
         }
 
     }
-
 
 
 }

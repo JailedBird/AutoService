@@ -4,4 +4,4 @@ import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.BINARY)
-annotation class AutoSPI(val target: KClass<*> = Unit::class)
+annotation class AutoService(val target: KClass<*> = Unit::class)
