@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 rootProject.name = "AutoServiceKspCompiler"
 include ':app'
 include ':compiler'
-include ':lib'
+include ':library'

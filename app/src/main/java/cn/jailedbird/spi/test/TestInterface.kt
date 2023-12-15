@@ -1,4 +1,4 @@
-package cn.jailedbird.arouter.ksp.test
+package cn.jailedbird.spi.test
 
 interface TestInterface1<T> {
 }

@@ -6,18 +6,15 @@ plugins {
 
 // or--> apply plugin: 'kotlin-android'
 // or--> apply plugin: 'com.google.devtools.ksp'
-ksp {
-    arg("AROUTER_MODULE_NAME", project.getName())
-}
 
 android.sourceSets.all { it.java.srcDir("build/generated/ksp/${it.name}/kotlin/") }
 
 android {
-    namespace 'cn.jailedbird.arouter.ksp'
+    namespace 'cn.jailedbird.spi.app'
     compileSdk 33
 
     defaultConfig {
-        applicationId "cn.jailedbird.arouter.ksp"
+        applicationId "cn.jailedbird.spi"
         minSdk 21
         targetSdk 33
         versionCode 1
@@ -43,7 +40,7 @@ android {
 
 dependencies {
     ksp project(":compiler")
-    implementation project(":lib")
+    implementation project(":library")
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'

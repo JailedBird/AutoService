@@ -20,7 +20,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 }
 
 dependencies {
-    implementation project(':lib')
+    implementation project(':library')
 
     // ksp https://github.com/google/ksp/releases/tag/1.7.20-1.0.6
     implementation 'com.google.devtools.ksp:symbol-processing-api:1.7.20-1.0.8'

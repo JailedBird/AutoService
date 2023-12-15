@@ -1,1 +1,1 @@
-cn.jailedbird.arouter.ksp.compiler.AutoServiceSymbolProcessorProvider
+cn.jailedbird.spi.compiler.AutoServiceSymbolProcessorProvider

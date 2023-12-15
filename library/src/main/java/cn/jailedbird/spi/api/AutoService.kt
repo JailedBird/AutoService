@@ -1,4 +1,4 @@
-package cn.jailedbird.module.api
+package cn.jailedbird.spi.api
 
 import kotlin.reflect.KClass
 

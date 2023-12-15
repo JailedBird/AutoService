@@ -1,4 +1,4 @@
-package cn.jailedbird.arouter.ksp.compiler.utils
+package cn.jailedbird.spi.compiler.utils
 
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSNode

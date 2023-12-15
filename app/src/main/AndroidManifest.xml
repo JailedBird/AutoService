@@ -7,13 +7,13 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:name=".App"
+        android:name="cn.jailedbird.spi.App"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ArouterKsp"
+        android:theme="@style/Theme.AutoService"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name="cn.jailedbird.spi.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SecondActivity"
+            android:name="cn.jailedbird.spi.SecondActivity"
             android:exported="true">
         </activity>
     </application>

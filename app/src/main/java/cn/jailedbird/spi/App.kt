@@ -1,4 +1,4 @@
-package cn.jailedbird.arouter.ksp
+package cn.jailedbird.spi
 
 import android.app.Application
 

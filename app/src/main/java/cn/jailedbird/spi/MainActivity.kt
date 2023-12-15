@@ -1,8 +1,9 @@
-package cn.jailedbird.arouter.ksp
+package cn.jailedbird.spi
 
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import cn.jailedbird.spi.app.R
 
 class MainActivity : AppCompatActivity() {
 

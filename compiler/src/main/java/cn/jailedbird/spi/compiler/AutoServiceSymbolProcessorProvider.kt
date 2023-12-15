@@ -1,9 +1,9 @@
-package cn.jailedbird.arouter.ksp.compiler
+package cn.jailedbird.spi.compiler
 
-import cn.jailedbird.arouter.ksp.compiler.utils.KspLoggerWrapper
-import cn.jailedbird.arouter.ksp.compiler.utils.findAnnotationWithType
-import cn.jailedbird.arouter.ksp.compiler.utils.isSubclassOf
-import cn.jailedbird.module.api.AutoService
+import cn.jailedbird.spi.compiler.utils.KspLoggerWrapper
+import cn.jailedbird.spi.compiler.utils.findAnnotationWithType
+import cn.jailedbird.spi.compiler.utils.isSubclassOf
+import cn.jailedbird.spi.api.AutoService
 import com.google.devtools.ksp.KSTypeNotPresentException
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.processing.CodeGenerator
@@ -48,7 +48,7 @@ class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
                     spi.target.qualifiedName.toString()
                 } catch (e: Exception) {
                     /**
-                     * Bug: ksp: com.google.devtools.ksp.KSTypeNotPresentException: java.lang.ClassNotFoundException: cn.jailedbird.arouter.ksp.test.TestInterface
+                     * Bug: ksp: com.google.devtools.ksp.KSTypeNotPresentException: java.lang.ClassNotFoundException: cn.jailedbird.spi.test.TestInterface1
                      * Official document: https://github.com/google/ksp/issues?q=ClassNotFoundException++KClass%3C*%3E
                      * temporary fix method as follows, but it is not perfect!!!
                      * TODO completely fix it!
