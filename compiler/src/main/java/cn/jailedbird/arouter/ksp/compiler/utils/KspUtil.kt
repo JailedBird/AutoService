@@ -47,12 +47,3 @@ internal fun KSClassDeclaration.isSubclassOf(
     }
     return false
 }
-
-internal fun KSClassDeclaration.getOnlyParent(): Pair<Boolean, KSTypeReference?> {
-    val superClasses = superTypes.toMutableList()
-    return if (superClasses.size == 1) {
-        true to superClasses[0]
-    } else {
-        false to null
-    }
-}

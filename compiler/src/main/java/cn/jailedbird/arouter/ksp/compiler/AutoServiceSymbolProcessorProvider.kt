@@ -2,7 +2,6 @@ package cn.jailedbird.arouter.ksp.compiler
 
 import cn.jailedbird.arouter.ksp.compiler.utils.KspLoggerWrapper
 import cn.jailedbird.arouter.ksp.compiler.utils.findAnnotationWithType
-import cn.jailedbird.arouter.ksp.compiler.utils.getOnlyParent
 import cn.jailedbird.arouter.ksp.compiler.utils.isSubclassOf
 import cn.jailedbird.module.api.AutoService
 import com.google.devtools.ksp.KSTypeNotPresentException
@@ -13,8 +12,10 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
+import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSDeclaration
 
 class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
 
@@ -58,18 +59,28 @@ class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
                 val targetImplClassName = element.qualifiedName!!.asString()
 
                 if (targetInterfaceClassName in VOID_LIST) {
-                    val pair = element.getOnlyParent()
-                    if (pair.first) {
+                    val supers = element.superTypes.toList()
+                    if (supers.size == 1) {
+                        val sp: KSDeclaration = supers[0].resolve().declaration
+                        if (sp is KSClassDeclaration) {
+                            if (sp.classKind != ClassKind.INTERFACE) {
+                                error("${sp.qualifiedName!!.asString()} must be a interface")
+                            }
+                        } else {
+                            error("Error type")
+                        }
+                        if ((sp as? KSClassDeclaration)?.classKind != ClassKind.INTERFACE) {
+                            error("")
+                        }
                         generate(
-                            element,
-                            pair.second!!.resolve().declaration.qualifiedName!!.asString(),
-                            targetImplClassName
+                            element, sp.qualifiedName!!.asString(), targetImplClassName
                         )
                     } else {
                         error("Please configure target")
                     }
                 } else {
                     if (element.isSubclassOf(targetInterfaceClassName)) {
+                        // TODO check targetInterfaceClassName:String is interface
                         generate(
                             element,
                             targetInterfaceClassName, targetImplClassName
