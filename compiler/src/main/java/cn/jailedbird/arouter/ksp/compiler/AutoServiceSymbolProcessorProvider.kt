@@ -16,7 +16,6 @@ import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 
-
 class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
 
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
@@ -31,6 +30,8 @@ class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
     ) : SymbolProcessor {
         companion object {
             private val AUTO_SERVICE_CLASS_NAME = AutoService::class.qualifiedName!!
+            private val VOID_LIST =
+                listOf(Unit::class.qualifiedName!!, Void::class.qualifiedName!!)
         }
 
         @OptIn(KspExperimental::class)
@@ -47,7 +48,7 @@ class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
                     spi.target.qualifiedName.toString()
                 } catch (e: Exception) {
                     /**
-                     * Bug: [ksp] com.google.devtools.ksp.KSTypeNotPresentException: java.lang.ClassNotFoundException: cn.jailedbird.arouter.ksp.test.TestInterface
+                     * Bug: ksp: com.google.devtools.ksp.KSTypeNotPresentException: java.lang.ClassNotFoundException: cn.jailedbird.arouter.ksp.test.TestInterface
                      * Official document: https://github.com/google/ksp/issues?q=ClassNotFoundException++KClass%3C*%3E
                      * temporary fix method as follows, but it is not perfect!!!
                      * TODO complete fix it!
@@ -57,7 +58,7 @@ class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
 
                 val targetImplClassName = element.qualifiedName!!.asString()
 
-                if (targetInterfaceClassName == Void::class.qualifiedName || targetInterfaceClassName == Unit::class.qualifiedName) {
+                if (targetInterfaceClassName in VOID_LIST) {
                     val pair = element.getOnlyParent()
                     if (pair.first) {
                         generate(
