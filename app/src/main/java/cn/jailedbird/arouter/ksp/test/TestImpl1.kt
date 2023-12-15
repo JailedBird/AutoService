@@ -1,12 +1,12 @@
 package cn.jailedbird.arouter.ksp.test
 
-import cn.jailedbird.module.api.AutoSPI
+import cn.jailedbird.module.api.AutoService
 
-@AutoSPI
+@AutoService
 class TestImpl1<T> : TestInterface1<String> {
 }
 
 
-@AutoSPI(target = TestInterface2::class)
+@AutoService(target = TestInterface2::class)
 class TestImpl2<T> : TestInterface2<String> {
 }

@@ -3,7 +3,7 @@ package cn.jailedbird.arouter.ksp.compiler.utils
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSNode
 
-class KSPLoggerWrapper(private val logger: KSPLogger) : KSPLogger {
+class KspLoggerWrapper(private val logger: KSPLogger) : KSPLogger {
     companion object {
         const val TAG = "AutoService::Compiler "
     }

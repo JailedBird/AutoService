@@ -20,7 +20,6 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 }
 
 dependencies {
-    implementation 'com.alibaba:arouter-annotation:1.0.6'
     implementation project(':lib')
 
     // ksp https://github.com/google/ksp/releases/tag/1.7.20-1.0.6

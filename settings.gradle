@@ -18,7 +18,7 @@ dependencyResolutionManagement {
         maven { url 'https://jitpack.io' }
     }
 }
-rootProject.name = "ArouterKspCompiler"
+rootProject.name = "AutoServiceKspCompiler"
 include ':app'
 include ':compiler'
 include ':lib'
