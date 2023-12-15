@@ -26,14 +26,14 @@ internal inline fun KSPLogger.check(condition: Boolean, element: KSNode?, messag
  * */
 internal fun KSClassDeclaration.isSubclassOf(
     superClassName: String,
-): Boolean {
+): KSDeclaration? {
     val superClasses = superTypes.toMutableList()
     while (superClasses.isNotEmpty()) {
         val current: KSTypeReference = superClasses.first()
         val declaration: KSDeclaration = current.resolve().declaration
         when {
             declaration is KSClassDeclaration && declaration.qualifiedName?.asString() == superClassName -> {
-                return true
+                return declaration
             }
             declaration is KSClassDeclaration -> {
                 superClasses.removeAt(0)
@@ -45,5 +45,5 @@ internal fun KSClassDeclaration.isSubclassOf(
             }
         }
     }
-    return false
+    return null
 }

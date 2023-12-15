@@ -5,8 +5,6 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import cn.jailedbird.spi.app.R
-import cn.jailedbird.spi.test.TestImpl1
-import cn.jailedbird.spi.test.TestImpl3
 import cn.jailedbird.spi.test.TestInterface1
 import cn.jailedbird.spi.test.TestInterface3
 import java.util.ServiceLoader

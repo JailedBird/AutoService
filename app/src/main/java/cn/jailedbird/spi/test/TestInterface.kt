@@ -12,4 +12,6 @@ interface TestInterface3 {
     fun hello()
 }
 
+open class TestClass1<T>
+open class TestClass2<T>
 open class TestClass3<T>

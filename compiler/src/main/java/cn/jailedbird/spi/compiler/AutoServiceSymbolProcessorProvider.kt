@@ -1,9 +1,9 @@
 package cn.jailedbird.spi.compiler
 
+import cn.jailedbird.spi.api.AutoService
 import cn.jailedbird.spi.compiler.utils.KspLoggerWrapper
 import cn.jailedbird.spi.compiler.utils.findAnnotationWithType
 import cn.jailedbird.spi.compiler.utils.isSubclassOf
-import cn.jailedbird.spi.api.AutoService
 import com.google.devtools.ksp.KSTypeNotPresentException
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.processing.CodeGenerator
@@ -26,7 +26,7 @@ class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
     }
 
     class AutoServiceSymbolProcessor(
-        private val logger: KspLoggerWrapper,
+        @Suppress("unused") private val logger: KspLoggerWrapper,
         private val codeGenerator: CodeGenerator,
     ) : SymbolProcessor {
         companion object {
@@ -35,6 +35,7 @@ class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
                 listOf(Unit::class.qualifiedName!!, Void::class.qualifiedName!!)
         }
 
+        @Suppress("SpellCheckingInspection")
         @OptIn(KspExperimental::class)
         override fun process(resolver: Resolver): List<KSAnnotated> {
             val symbol = resolver.getSymbolsWithAnnotation(AUTO_SERVICE_CLASS_NAME)
@@ -43,7 +44,7 @@ class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
 
             elements.forEach { element ->
                 val spi: AutoService = element.findAnnotationWithType()
-                    ?: error("Error ksp process, with [AutoSPISymbolProcessorProvider]")
+                    ?: error("Error ksp process, with [AutoServiceSymbolProcessor]")
                 val targetInterfaceClassName = try {
                     spi.target.qualifiedName.toString()
                 } catch (e: Exception) {
@@ -62,32 +63,24 @@ class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
                     val supers = element.superTypes.toList()
                     if (supers.size == 1) {
                         val sp: KSDeclaration = supers[0].resolve().declaration
-                        if (sp is KSClassDeclaration) {
-                            if (sp.classKind != ClassKind.INTERFACE) {
-                                error("${sp.qualifiedName!!.asString()} must be a interface")
-                            }
-                        } else {
-                            error("Error type")
+                        sp.isInterfaceCheck{
+                            generate(
+                                element, sp.qualifiedName!!.asString(), targetImplClassName
+                            )
                         }
-                        if ((sp as? KSClassDeclaration)?.classKind != ClassKind.INTERFACE) {
-                            error("")
-                        }
-                        generate(
-                            element, sp.qualifiedName!!.asString(), targetImplClassName
-                        )
                     } else {
                         error("Please configure target")
                     }
                 } else {
-                    if (element.isSubclassOf(targetInterfaceClassName)) {
-                        // TODO check targetInterfaceClassName:String is interface
-                        generate(
-                            element,
-                            targetInterfaceClassName, targetImplClassName
-                        )
-
+                    val targetKSDeclaration: KSDeclaration? = element.isSubclassOf(targetInterfaceClassName)
+                    if (targetKSDeclaration != null) {
+                        targetKSDeclaration.isInterfaceCheck{
+                            generate(
+                                element, targetInterfaceClassName, targetImplClassName
+                            )
+                        }
                     } else {
-                        error("AutoSPI.target is ${targetInterfaceClassName}, but ${element.simpleName.asString()} is not a subclass of  $targetInterfaceClassName")
+                        error("AutoService.target is ${targetInterfaceClassName}, but ${element.simpleName.asString()} is not a subclass of  $targetInterfaceClassName")
                     }
                 }
 
@@ -103,6 +96,21 @@ class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
             ).use {
                 it.write(implName.toByteArray())
             }
+        }
+
+        private inline fun KSDeclaration.isInterfaceCheck(block: () -> Unit) {
+            val sp = this
+            if (sp is KSClassDeclaration) {
+                if (sp.classKind != ClassKind.INTERFACE) {
+                    error("${sp.qualifiedName!!.asString()} must be a interface")
+                }
+            } else {
+                error("Error type")
+            }
+            if ((sp as? KSClassDeclaration)?.classKind != ClassKind.INTERFACE) {
+                error("")
+            }
+            block.invoke()
         }
 
     }

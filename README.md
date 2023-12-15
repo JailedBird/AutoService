@@ -1,15 +1,15 @@
 # AutoServiceKspCompiler
-AutoService KSP annotation processor
+[AutoService KSP annotation processor](https://github.com/JailedBird/AutoServiceKspCompiler)
 
 ## 简介
 
-AutoServiceKspCompiler是自动为Service Provider Interface（SPI）生成 `META-INF/services` 配置的高性能KSP注解处理器插件；对于Android开发者来说，可以使用SPI实现基于接口的模块解耦；
+AutoServiceKspCompiler是自动为Service Provider Interface（SPI）生成 `META-INF/services` 配置的高性能KSP注解处理器插件；
 
+效果如图：
 
+![image-20231215171801088](https://zhaojunchen-1259455842.cos.ap-nanjing.myqcloud.com//imgimage-20231215171801088.png)
 
-背过Java面试题的应该都知道SPI，关于SPI以及其在Android中的使用，可以参考这位大佬的文章 [Android 中 SPI 的使用](https://juejin.cn/post/6844903478272196615) ， 这里不在赘述；
-
-
+背过Java面试题的应该都知道SPI，对于Android开发者来说，可以使用SPI实现基于接口的模块解耦；具体可以参考这位大佬的文章 [Android 中 SPI 的使用](https://juejin.cn/post/6844903478272196615) ， 这里不在赘述；
 
 ## 接入 [![](https://jitpack.io/v/JailedBird/AutoServiceKspCompiler.svg)](https://jitpack.io/#JailedBird/AutoServiceKspCompiler)
 
@@ -19,7 +19,7 @@ AutoServiceKspCompiler是自动为Service Provider Interface（SPI）生成 `MET
 maven { url 'https://jitpack.io' }
 ```
 
-2、 为项目接入ksp插件，具体请 [参考项目](https://github.com/JailedBird/AutoServiceKspCompiler/blob/main/build.gradle) ，如已配置则忽略
+2、 为项目接入ksp插件，详见 [build.gradle](https://github.com/JailedBird/AutoServiceKspCompiler/blob/main/build.gradle) ，如已配置则忽略
 
 ```kotlin
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
@@ -48,7 +48,7 @@ ksp("com.github.JailedBird.AutoServiceKspCompiler:AutoServiceKspCompiler:VERSION
 
 ## 使用
 
-具体可参考[项目](https://github.com/JailedBird/AutoServiceKspCompiler)
+详见 [AutoServiceKspCompiler/app](https://github.com/JailedBird/AutoServiceKspCompiler)
 
 1、 添加SPI机制需要的接口
 
@@ -81,7 +81,7 @@ class TestImpl2<T> : TestInterface2<String> {
 
 其中，如果实现类是单继承接口则可忽略`target`，否则必须显示指定；
 
-**注意：处于KSP注解处理性能（涉及增量编译）的考量，这里只支持 单接口对单实现的映射关系，多对一会验证影响注解处理性能；**
+***注意：出于KSP注解处理性能（涉及增量编译）的考量，这里只支持 单接口对单实现的映射关系，多对一会对注解处理性能影响较大，得不偿失；***
 
 3、 通过ServiceLoader加载实现类；
 
