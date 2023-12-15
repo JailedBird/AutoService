@@ -25,9 +25,9 @@ open class TestImpl3 : TestInterface3 {
 // class TestClassImpl1<T> : TestClass1<String>() {
 // }
 
-@AutoService(target = TestClass3::class)
-class TestClassImpl2<T> : TestClass2<String>() {
-}
+// @AutoService(target = TestClass3::class)
+// class TestClassImpl2<T> : TestClass2<String>() {
+// }
 //
 // @AutoService(target = TestClass3::class)
 // class TestClassImpl3<T> : TestClass3<String>() {
