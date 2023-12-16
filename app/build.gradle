@@ -39,13 +39,13 @@ android {
 }
 
 dependencies {
-    // Local develop
-    ksp project(":compiler")
-    implementation project(":library")
-    // Remote implementation
-//    def VERSION = "1.0.0-beta02"
-//    implementation("com.github.JailedBird.AutoService:AutoServiceApi:${VERSION}")
-//    ksp("com.github.JailedBird.AutoService:AutoServiceCompiler:${VERSION}")
+//    // Local develop
+//    ksp project(":compiler")
+//    implementation project(":library")
+//    // Remote implementation
+    def VERSION = "1.0.1"
+    implementation("com.github.JailedBird.AutoService:api:${VERSION}")
+    ksp("com.github.JailedBird.AutoService:compiler:${VERSION}")
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
