@@ -1,9 +1,9 @@
-# AutoServiceKspCompiler
-[AutoService KSP annotation processor](https://github.com/JailedBird/AutoServiceKspCompiler)
+# AutoService
+[AutoService KSP annotation processor](https://github.com/JailedBird/AutoService)
 
 ## 简介
 
-AutoServiceKspCompiler是自动为Service Provider Interface（SPI）生成 `META-INF/services` 配置的高性能KSP注解处理器插件；
+AutoService是自动为Service Provider Interface（SPI）生成 `META-INF/services` 配置的高性能KSP注解处理器插件；
 
 效果如图：
 
@@ -11,15 +11,15 @@ AutoServiceKspCompiler是自动为Service Provider Interface（SPI）生成 `MET
 
 背过Java面试题的应该都知道SPI，对于Android开发者来说，可以使用SPI实现基于接口的模块解耦；具体可以参考这位大佬的文章 [Android 中 SPI 的使用](https://juejin.cn/post/6844903478272196615) ， 这里不在赘述；
 
-## 接入 [![](https://jitpack.io/v/JailedBird/AutoServiceKspCompiler.svg)](https://jitpack.io/#JailedBird/AutoServiceKspCompiler)
+## 接入 [![](https://jitpack.io/v/JailedBird/AutoService.svg)](https://jitpack.io/#JailedBird/AutoService)
 
-1、 添加jitpack仓库，最新版本 [![](https://jitpack.io/v/JailedBird/AutoServiceKspCompiler.svg)](https://jitpack.io/#JailedBird/AutoServiceKspCompiler)
+1、 添加jitpack仓库，最新版本 [![](https://jitpack.io/v/JailedBird/AutoService.svg)](https://jitpack.io/#JailedBird/AutoService)
 
 ```kotlin
 maven { url 'https://jitpack.io' }
 ```
 
-2、 为项目接入ksp插件，详见 [build.gradle](https://github.com/JailedBird/AutoServiceKspCompiler/blob/main/build.gradle) ，如已配置则忽略
+2、 为项目接入ksp插件，详见 [build.gradle](https://github.com/JailedBird/AutoService/blob/main/build.gradle) ，如已配置则忽略
 
 ```kotlin
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
@@ -35,20 +35,20 @@ plugins {
 3、 导入AutoService注解对应依赖
 
 ```kotlin
-implementation("com.github.JailedBird.AutoServiceKspCompiler:AutoServiceApi:VERSION")
+implementation("com.github.JailedBird.AutoService:api:VERSION")
 ```
 
 4、 需要使用插件的各个模块，使用ksp导入插件
 
 ```kotlin
-ksp("com.github.JailedBird.AutoServiceKspCompiler:AutoServiceKspCompiler:VERSION")
+ksp("com.github.JailedBird.AutoService:compiler:VERSION")
 ```
 
 
 
 ## 使用
 
-详见 [AutoServiceKspCompiler/app](https://github.com/JailedBird/AutoServiceKspCompiler)
+详见 [AutoService/app](https://github.com/JailedBird/AutoService)
 
 1、 添加SPI机制需要的接口
 
