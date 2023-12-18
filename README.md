@@ -1,4 +1,8 @@
 # AutoService
+
+[![GitHub stars](https://img.shields.io/github/stars/JailedBird/AutoService.svg)](https://github.com/JailedBird/AutoService/stargazers) [![GitHub forks](https://img.shields.io/github/forks/JailedBird/AutoService.svg)](https://github.com/JailedBird/AutoService/network/members) [![GitHub issues](https://img.shields.io/github/issues/JailedBird/AutoService.svg)](https://github.com/JailedBird/AutoService/issues) [![GitHub license](https://img.shields.io/github/license/JailedBird/AutoService.svg)](https://github.com/JailedBird/AutoService/blob/master/LICENSE)
+
+
 [AutoService KSP annotation processor](https://github.com/JailedBird/AutoService)
 
 ## 简介
