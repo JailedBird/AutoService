@@ -4,6 +4,7 @@ import cn.jailedbird.spi.api.AutoService
 import cn.jailedbird.spi.compiler.utils.KspLoggerWrapper
 import cn.jailedbird.spi.compiler.utils.findAnnotationWithType
 import cn.jailedbird.spi.compiler.utils.isSubclassOf
+import cn.jailedbird.spi.compiler.utils.parseAnnotationClassParameter
 import com.google.devtools.ksp.KSTypeNotPresentException
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.processing.CodeGenerator
@@ -41,29 +42,33 @@ class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
             val symbol = resolver.getSymbolsWithAnnotation(AUTO_SERVICE_CLASS_NAME)
 
             val elements = symbol.filterIsInstance<KSClassDeclaration>().toList()
-
-            elements.forEach { element ->
+            for (element in elements) {
+                // elements.forEach { element ->
                 val spi: AutoService = element.findAnnotationWithType()
                     ?: error("Error ksp process, with [AutoServiceSymbolProcessor]")
-                val targetInterfaceClassName = try {
-                    spi.target.qualifiedName.toString()
-                } catch (e: Exception) {
-                    /**
-                     * Bug: ksp: com.google.devtools.ksp.KSTypeNotPresentException: java.lang.ClassNotFoundException: cn.jailedbird.spi.test.TestInterface1
-                     * Official document: https://github.com/google/ksp/issues?q=ClassNotFoundException++KClass%3C*%3E
-                     * temporary fix method as follows, but it is not perfect!!!
-                     * TODO completely fix it!
-                     * */
-                    ((e as? KSTypeNotPresentException)?.cause as? ClassNotFoundException)?.message.toString()
+//                val targetInterfaceClassName = try {
+//                    spi.target.qualifiedName.toString()
+//                } catch (e: Exception) {
+//                    /**
+//                     * Bug: ksp: com.google.devtools.ksp.KSTypeNotPresentException: java.lang.ClassNotFoundException: cn.jailedbird.spi.test.TestInterface1
+//                     * Official document: https://github.com/google/ksp/issues?q=ClassNotFoundException++KClass%3C*%3E
+//                     * temporary fix method as follows, but it is not perfect!!!
+//                     * TODO completely fix it!
+//                     * */
+//                    ((e as? KSTypeNotPresentException)?.cause as? ClassNotFoundException)?.message.toString()
+//                }
+                // https://github.com/JailedBird/WMRouterKspCompiler?tab=readme-ov-file#%E5%85%B3%E9%94%AE%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95
+                val targetInterfaceClassName = parseAnnotationClassParameter { spi.target }
+                if (targetInterfaceClassName.isNullOrEmpty()) {
+                    continue
                 }
-
                 val targetImplClassName = element.qualifiedName!!.asString()
 
                 if (targetInterfaceClassName in VOID_LIST) {
                     val supers = element.superTypes.toList()
                     if (supers.size == 1) {
                         val sp: KSDeclaration = supers[0].resolve().declaration
-                        sp.isInterfaceCheck{
+                        sp.isInterfaceCheck {
                             generate(
                                 element, sp.qualifiedName!!.asString(), targetImplClassName
                             )
@@ -72,9 +77,10 @@ class AutoServiceSymbolProcessorProvider : SymbolProcessorProvider {
                         error("Please configure target")
                     }
                 } else {
-                    val targetKSDeclaration: KSDeclaration? = element.isSubclassOf(targetInterfaceClassName)
+                    val targetKSDeclaration: KSDeclaration? =
+                        element.isSubclassOf(targetInterfaceClassName)
                     if (targetKSDeclaration != null) {
-                        targetKSDeclaration.isInterfaceCheck{
+                        targetKSDeclaration.isInterfaceCheck {
                             generate(
                                 element, targetInterfaceClassName, targetImplClassName
                             )

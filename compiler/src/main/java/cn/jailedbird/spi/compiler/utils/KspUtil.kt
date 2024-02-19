@@ -1,9 +1,12 @@
 package cn.jailedbird.spi.compiler.utils
 
+import com.google.devtools.ksp.KSTypeNotPresentException
+import com.google.devtools.ksp.KSTypesNotPresentException
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.*
+import kotlin.reflect.KClass
 
 @OptIn(KspExperimental::class)
 internal inline fun <reified T : Annotation> KSAnnotated.findAnnotationWithType(): T? {
@@ -35,6 +38,7 @@ internal fun KSClassDeclaration.isSubclassOf(
             declaration is KSClassDeclaration && declaration.qualifiedName?.asString() == superClassName -> {
                 return declaration
             }
+
             declaration is KSClassDeclaration -> {
                 superClasses.removeAt(0)
                 superClasses.addAll(0, declaration.superTypes.toList())
@@ -47,3 +51,41 @@ internal fun KSClassDeclaration.isSubclassOf(
     }
     return null
 }
+
+/*
+fun parseAnnotationClassParameter(block: () -> List<KClass<*>>): List<String> {
+    return try { // KSTypesNotPresentException will be thrown
+        block.invoke().mapNotNull { it.qualifiedName }
+    } catch (e: KSTypesNotPresentException) {
+        val res = mutableListOf<String>()
+        val ksTypes = e.ksTypes
+        for (ksType in ksTypes) {
+            val declaration = ksType.declaration
+            if (declaration is KSClassDeclaration) {
+                declaration.qualifiedName?.asString()?.let {
+                    res.add(it)
+                }
+            }
+        }
+        res
+    }
+}*/
+
+@OptIn(KspExperimental::class)
+fun parseAnnotationClassParameter(block: () -> KClass<*>): String? {
+    return try { // KSTypesNotPresentException will be thrown
+        block.invoke().qualifiedName
+    } catch (e: KSTypeNotPresentException) {
+        var res: String? = null
+        val declaration = e.ksType.declaration
+        if (declaration is KSClassDeclaration) {
+            declaration.qualifiedName?.asString()?.let {
+                res = it
+            }
+        }
+        res
+    }
+}
+
+
+
